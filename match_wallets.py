@@ -6,10 +6,16 @@
 from pymongo import MongoClient
 
 RANDOM_GENERATED_WALLETS_PATH='./data/generated_wallets.txt'
+FOUND_WALLETS_PATH='./data/found_wallets.txt'
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://10.10.10.201:27017/')
 with client:
     db = client.btc
+
+def write_to_file(path, wallet):
+    with open(path, "a") as f:
+        f.write(wallet)
+        f.close()
 
 def read_from_file_wallets_with_private_keys(path):
     f=open(path,'r')
@@ -23,8 +29,10 @@ def read_from_file_wallets_with_private_keys(path):
         res = list(db.wallets_with_balance.find(query))
         #print(f"{size}/{count}")
         if res != []:
-            print("FOUND WALLET!", res)
-            break
+            answer = "FOUND WALLET!" + str(res)
+            print(answer)
+            write_to_file(FOUND_WALLETS_PATH, answer)
+    print("Matching ended.")
 
 
 read_from_file_wallets_with_private_keys(RANDOM_GENERATED_WALLETS_PATH)
