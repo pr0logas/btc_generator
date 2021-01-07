@@ -5,7 +5,7 @@
 
 from pymongo import MongoClient
 
-RANDOM_GENERATED_WALLETS_PATH='/home/tomand/btc_generator/data/generated_wallets.txt'
+RANDOM_GENERATED_WALLETS_PATH='./data/generated_wallets.txt'
 
 client = MongoClient('mongodb://localhost:27017/')
 with client:
