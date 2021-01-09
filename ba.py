@@ -5,6 +5,7 @@
 
 import bitcoin
 import time
+import threading
 import multiprocessing
 import os
 import sys
@@ -12,7 +13,7 @@ import pymongo
 from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
 
-MONGO_HOST = 'mongodb://10.10.10.201:27017/'
+MONGO_HOST = 'mongodb://127.0.0.1:27017/'
 HOW_MANY_CPU_CORES = 2
 HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE = 1000
 FOUNDED_WALLETS_PATH='found_wallets.txt'
@@ -136,4 +137,4 @@ def start_workers(cpucores):
         p.start()
 
 start_workers(HOW_MANY_CPU_CORES)
-check_progress()
+threading.Thread(target=check_progress).start()
