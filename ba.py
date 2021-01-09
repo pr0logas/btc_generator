@@ -5,13 +5,12 @@
 
 import bitcoin
 import time
-import threading
 import multiprocessing
 import os
+import sys
 import pymongo
 from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
-from pymongo import errors as mongoerrors
 
 MONGO_HOST = 'mongodb://10.10.10.201:27017/'
 HOW_MANY_CPU_CORES = 2
@@ -87,13 +86,13 @@ def start_generator(workernum):
             res = list(db.COLLECTION.find(query ,{ "_id": 0, "wallet": 1}))
         except pymongo.errors.NetworkTimeout:
             print("Warning MongoDB is down? Unable to match the wallets...")
-            pass
+            sys.exit(1)
         except pymongo.errors.ServerSelectionTimeoutError:
             print("Warning MongoDB is down? Unable to match the wallets...")
-            pass
+            sys.exit(1)
         except:
             print("Something wrong with db, does it work?")
-            start_generator(workernum)
+            sys.exit(1)
 
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
 
