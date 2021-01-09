@@ -8,6 +8,7 @@ import time
 import threading
 import multiprocessing
 import os
+import pymongo
 from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
 from pymongo import errors as mongoerrors
@@ -92,7 +93,7 @@ def start_generator(workernum):
             pass
         except:
             print("Something wrong with db, does it work?")
-            pass
+            start_generator(workernum)
 
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
 
