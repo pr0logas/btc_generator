@@ -78,3 +78,5 @@ Those addreses already decoded by someone else:
 100 000000000000000000000000000000000000000af55fc59c335c8ec67ed24826 1KCgMv8fo2TPBpddVi9jqmMmcne9uSNJ5F
 105 000000000000000000000000000000000000016f14fc2054cd87ee6396b33df3 1CMjscKB3QW7SDyQ4c3C3DEUHiHRhiZVib
 ```
+
+[![N|Solid](https://en.bitcoin.it/w/images/en/4/48/Address_map.jpg)](https://en.bitcoin.it/w/images/en/4/48/Address_map.jpg)
