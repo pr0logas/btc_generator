@@ -7,7 +7,10 @@ import bitcoin
 import time
 import threading
 import multiprocessing
+import os
 from pymongo import MongoClient
+from pymongo.errors import AutoReconnect
+from pymongo import errors as mongoerrors
 
 HOW_MANY_CPU_CORES = 2
 HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE = 1000
@@ -78,7 +81,15 @@ def start_generator(workernum):
         #print("Compressed Bitcoin Address (b58check) is:", compressed_wallet_addr)
 
         query = {"wallet": compressed_wallet_addr}
-        res = list(db.COLLECTION.find(query ,{ "_id": 0, "wallet": 1}))
+        try:
+            res = list(db.COLLECTION.find(query ,{ "_id": 0, "wallet": 1}))
+        except pymongo.errors.NetworkTimeout:
+            print("Warning MongoDB is down? Unable to match the wallets...")
+            pass
+        except pymongo.errors.ServerSelectionTimeoutError:
+            print("Warning MongoDB is down? Unable to match the wallets...")
+            pass
+
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
 
         if res != []:
@@ -90,6 +101,29 @@ def start_generator(workernum):
           f"{(time.time() - start_time)} seconds ---")
     start_generator(workernum)
 
+def check_progress():
+    time.sleep(10)
+    pot_sleep_time = 30
+    while True:
+        try:
+            stat = os.stat(FOUNDED_WALLETS_PATH)
+            pot_sleep_time = 5
+            print("")
+            print(f"************************** HONEY POT! ************************************")
+            print(f"*********** Please check the file: {FOUNDED_WALLETS_PATH} ***************")
+            print("")
+
+        except FileNotFoundError:
+            print(f"*** Found nothing so far, patience, please ***")
+            print(f"*** There are only: 1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,976 possible BTC addresses :) ***")
+
+
+        except Exception as e:
+            print(f"<IOwork> Something went wrong. Cannot get {FOUNDED_WALLETS_PATH} modification time!")
+            print(e)
+            pass
+        time.sleep(pot_sleep_time)
+
 
 def start_workers(cpucores):
     for i in range(cpucores):
@@ -97,3 +131,4 @@ def start_workers(cpucores):
         p.start()
 
 start_workers(HOW_MANY_CPU_CORES)
+check_progress()
