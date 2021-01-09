@@ -80,3 +80,6 @@ Those addreses already decoded by someone else:
 ```
 
 [![N|Solid](https://en.bitcoin.it/w/images/en/4/48/Address_map.jpg)](https://en.bitcoin.it/w/images/en/4/48/Address_map.jpg)
+
+[![N|Solid1](https://www.oreilly.com/library/view/mastering-bitcoin-2nd/9781491954379/assets/mbc2_0401.png)](https://www.oreilly.com/library/view/mastering-bitcoin-2nd/9781491954379/ch04.html#comp_priv)
+
