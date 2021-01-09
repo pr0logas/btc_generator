@@ -1,0 +1,14 @@
+[Unit]
+Description=ba
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt
+ExecStart=/usr/bin/python3 ba.py
+Restart=always
+TimeoutStopSec=2s
+
+[Install]
+WantedBy=default.target
+
