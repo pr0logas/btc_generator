@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 ##:: Date: 2021-01-09
 ##:: Author: Tomas Andriekus
-##:: Descriotion: Create a random or manual private key of BTC and match the wallet addr with existing wallets on network..
+##:: Descriotion: Create a random or manual private key of BTC and match the wallet addr with existing wallets on database.
 
 import bitcoin
 import time
@@ -114,6 +114,7 @@ def check_progress():
             print("")
 
         except FileNotFoundError:
+            pot_sleep_time = 900
             print(f"*** Found nothing so far, patience, please ***")
             print(f"*** There are only: 1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,976 possible BTC addresses :) ***")
 
