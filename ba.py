@@ -11,12 +11,14 @@ from pymongo import MongoClient
 
 HOW_MANY_CPU_CORES = 2
 HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE = 1000
-FOUND_WALLETS_PATH='found_wallets.txt'
+FOUNDED_WALLETS_PATH='found_wallets.txt'
+DB = 'btc'
+COLLECTION = 'wallets_with_balance'
 
 def start_mongo():
     client = MongoClient('mongodb://10.10.10.201:27017/')
     with client:
-        db = client.btc
+        db = client.DB
     return db
 
 def write_to_file(path, wallet):
@@ -76,12 +78,12 @@ def start_generator(workernum):
         #print("Compressed Bitcoin Address (b58check) is:", compressed_wallet_addr)
 
         query = {"wallet": compressed_wallet_addr}
-        res = list(db.wallets_with_balance.find(query ,{ "_id": 0, "wallet": 1}))
+        res = list(db.COLLECTION.find(query ,{ "_id": 0, "wallet": 1}))
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
 
         if res != []:
             print(f"Wallet Found! Worker-{workernum} {res}")
-            write_to_file(FOUND_WALLETS_PATH, 'Wallet Found! Private key: ' + private_key + ' ' + str(res) + '\n')
+            write_to_file(FOUNDED_WALLETS_PATH, 'Wallet Found! Private key: ' + private_key + ' ' + str(res) + '\n')
 
 
     print(f"--- Worker-{workernum} checked {HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE} wallets / "
