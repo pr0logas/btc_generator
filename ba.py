@@ -12,6 +12,7 @@ from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
 from pymongo import errors as mongoerrors
 
+MONGO_HOST = 'mongodb://10.10.10.201:27017/'
 HOW_MANY_CPU_CORES = 2
 HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE = 1000
 FOUNDED_WALLETS_PATH='found_wallets.txt'
@@ -19,7 +20,7 @@ DB = 'btc'
 COLLECTION = 'wallets_with_balance'
 
 def start_mongo():
-    client = MongoClient('mongodb://10.10.10.201:27017/')
+    client = MongoClient(MONGO_HOST)
     with client:
         db = client.DB
     return db
@@ -88,6 +89,9 @@ def start_generator(workernum):
             pass
         except pymongo.errors.ServerSelectionTimeoutError:
             print("Warning MongoDB is down? Unable to match the wallets...")
+            pass
+        except:
+            print("Something wrong with db, does it work?")
             pass
 
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
