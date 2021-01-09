@@ -103,7 +103,7 @@ def start_generator(workernum):
 
 def check_progress():
     time.sleep(10)
-    pot_sleep_time = 30
+    pot_sleep_time = 900
     while True:
         try:
             stat = os.stat(FOUNDED_WALLETS_PATH)
