@@ -11,8 +11,6 @@ import time
 import threading
 import multiprocessing
 import os
-import sys
-import pymongo
 from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
 
@@ -31,6 +29,30 @@ def write_to_file(path, wallet):
     with open(path, "a") as f:
         f.write(wallet)
         f.close()
+
+
+def autoreconnect_retry(fn, retries=20):
+    def db_op_wrapper(*args, **kwargs):
+        tries = 0
+
+        while tries < retries:
+            try:
+                return fn(*args, **kwargs)
+
+            except AutoReconnect:
+                tries += 1
+
+        raise Exception("MongoDB not responding. No luck even after %d retries" % retries)
+
+    return db_op_wrapper
+
+@autoreconnect_retry
+def mongo_send_find_query(connection, query):
+    return list(connection.wallets_with_balance.find(query, {"_id": 0, "wallet": 1}))
+
+@autoreconnect_retry
+def mongo_write_generated_private_keys_with_wallets(connection, write_query):
+    return connection.generated_wallets_with_priv_keys.insert_one(write_query)
 
 def start_generator(workernum):
     start_time = time.time()
@@ -83,24 +105,19 @@ def start_generator(workernum):
         compressed_wallet_addr = bitcoin.pubkey_to_address(hex_compressed_public_key)
         #print("Compressed Bitcoin Address (b58check) is:", compressed_wallet_addr)
 
+        write_query = {"wallet": compressed_wallet_addr , "privkey" : private_key}
+        mongo_write_generated_private_keys_with_wallets(db, write_query)
+
         query = {"wallet": compressed_wallet_addr}
-        try:
-            res = list(db.wallets_with_balance.find(query ,{ "_id": 0, "wallet": 1}))
-        except pymongo.errors.NetworkTimeout:
-            print("Warning MongoDB is down? Unable to match the wallets...")
-            sys.exit(1)
-        except pymongo.errors.ServerSelectionTimeoutError:
-            print("Warning MongoDB is down? Unable to match the wallets...")
-            sys.exit(1)
-        except:
-            print("Something wrong with db, does it work?")
-            sys.exit(1)
+        query_result = mongo_send_find_query(db, query)
 
+        # >>> Debug <<<
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
+        #print(f"Database match result: {query_result}")
 
-        if res != []:
-            print(f"Wallet Found! Worker-{workernum} {res} {private_key}")
-            write_to_file(FOUNDED_WALLETS_PATH, 'Wallet Found! Private key: ' + private_key + ' ' + str(res) + '\n')
+        if query_result != []:
+            print(f"Wallet Found! Worker-{workernum} {query_result} {private_key}")
+            write_to_file(FOUNDED_WALLETS_PATH, 'Wallet Found! Private key: ' + private_key + ' ' + str(query_result) + '\n')
 
 
     print(f"--- Worker-{workernum} checked {HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE} wallets / "
