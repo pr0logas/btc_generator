@@ -3,6 +3,9 @@
 ##:: Author: Tomas Andriekus
 ##:: Descriotion: Create a random or manual private key of BTC and match the wallet addr with existing wallets on database.
 
+# db = btc
+# col = wallets_with_balance
+
 import bitcoin
 import time
 import threading
@@ -17,13 +20,11 @@ MONGO_HOST = 'mongodb://127.0.0.1:27017/'
 HOW_MANY_CPU_CORES = 2
 HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE = 1000
 FOUNDED_WALLETS_PATH='found_wallets.txt'
-DB = 'btc'
-COLLECTION = 'wallets_with_balance'
 
 def start_mongo():
     client = MongoClient(MONGO_HOST)
     with client:
-        db = client.DB
+        db = client.btc
     return db
 
 def write_to_file(path, wallet):
@@ -84,7 +85,7 @@ def start_generator(workernum):
 
         query = {"wallet": compressed_wallet_addr}
         try:
-            res = list(db.COLLECTION.find(query ,{ "_id": 0, "wallet": 1}))
+            res = list(db.wallets_with_balance.find(query ,{ "_id": 0, "wallet": 1}))
         except pymongo.errors.NetworkTimeout:
             print("Warning MongoDB is down? Unable to match the wallets...")
             sys.exit(1)
