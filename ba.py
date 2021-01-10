@@ -106,7 +106,7 @@ def start_generator(workernum):
         compressed_wallet_addr = bitcoin.pubkey_to_address(hex_compressed_public_key)
         #print("Compressed Bitcoin Address (b58check) is:", compressed_wallet_addr)
 
-        write_query = {"wallet": compressed_wallet_addr , "privkey" : private_key}
+        write_query = {"wallet": compressed_wallet_addr , "privkey" : private_key , "decimal_priv_key" : str(decoded_private_key)}
         mongo_write_generated_private_keys_with_wallets(db, write_query)
 
         query = {"wallet": compressed_wallet_addr}
