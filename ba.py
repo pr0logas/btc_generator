@@ -4,7 +4,8 @@
 ##:: Descriotion: Create a random or manual private key of BTC and match the wallet addr with existing wallets on database.
 
 # db = btc
-# col = wallets_with_balance
+# col1 = wallets_with_balance
+# col2 = generated_wallets_with_priv_keys
 
 import bitcoin
 import time
