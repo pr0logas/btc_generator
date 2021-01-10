@@ -99,7 +99,7 @@ def start_generator(workernum):
         #print(f"Trying to find: Worker-{workernum} {query} with privKey: {private_key}")
 
         if res != []:
-            print(f"Wallet Found! Worker-{workernum} {res}")
+            print(f"Wallet Found! Worker-{workernum} {res} {private_key}")
             write_to_file(FOUNDED_WALLETS_PATH, 'Wallet Found! Private key: ' + private_key + ' ' + str(res) + '\n')
 
 
