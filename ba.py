@@ -140,7 +140,8 @@ def check_progress():
         except FileNotFoundError:
             pot_sleep_time = 900
             print(f"*** Found nothing so far, patience, please ***")
-            print(f"*** There are only: 1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,976 possible BTC addresses :) ***")
+            print(f"*** There are only: 115792089237316195423570985008687907852837564279074904382605163141518161494337"
+                  f" possible BTC addresses :) ***")
 
 
         except Exception as e:
