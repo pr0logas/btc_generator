@@ -16,13 +16,12 @@ from pymongo import MongoClient
 from pymongo.errors import AutoReconnect
 
 MONGO_HOST = 'mongodb://127.0.0.1:27017/'
-HOW_MANY_CPU_CORES = 2
+HOW_MANY_CPU_CORES = 3
 HOW_MANY_WALLETS_TO_CHECK_PER_CYCLE = 1000
 FOUNDED_WALLETS_PATH='found_wallets.txt'
 
 def start_mongo():
-    client = MongoClient(MONGO_HOST)
-    with client:
+    with MongoClient(MONGO_HOST) as client:
         db = client.btc
     return db
 
@@ -106,8 +105,9 @@ def start_generator(workernum):
         compressed_wallet_addr = bitcoin.pubkey_to_address(hex_compressed_public_key)
         #print("Compressed Bitcoin Address (b58check) is:", compressed_wallet_addr)
 
-        write_query = {"wallet": compressed_wallet_addr , "privkey" : private_key , "decimal_priv_key" : str(decoded_private_key)}
+        write_query = {"wallet": compressed_wallet_addr , "privkey" : private_key}
         mongo_write_generated_private_keys_with_wallets(db, write_query)
+
 
         query = {"wallet": compressed_wallet_addr}
         query_result = mongo_send_find_query(db, query)
@@ -140,7 +140,7 @@ def check_progress():
         except FileNotFoundError:
             pot_sleep_time = 900
             print(f"*** Found nothing so far, patience, please ***")
-            print(f"*** There are only: 115792089237316195423570985008687907852837564279074904382605163141518161494337"
+            print(f"*** There are only: 1461501637330902918203684832716283019655932542976"
                   f" possible BTC addresses :) ***")
 
 
